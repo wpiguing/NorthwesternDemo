@@ -1,0 +1,29 @@
+﻿
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<section class="text-gray-600 body-font">
+    <div class="container px-5 py-24 mx-auto">
+        <div class="flex flex-wrap -m-4">
+            <div class="p-4 lg:w-1/2">
+                <div class="h-half bg-gray-100 bg-opacity-75 px-8 pt-16 pb-24 rounded-lg overflow-hidden text-center relative">
+                    <h1 class="title-font sm:text-2xl text-xl font-medium text-gray-900 mb-3">MySQL</h1>
+                    <label for="mysql-input" class="text-left leading-7 text-sm text-gray-600">Connection String:</label>
+                    <input type="url" id="mysql-input" name="mysql-input" class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                    <button class="text-white bg-indigo-500 border-0 my-4 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">Connect</button>
+
+                </div>
+            </div>
+            <div class="p-4 lg:w-1/2">
+                <div class="h-half bg-gray-100 bg-opacity-75 px-8 pt-16 pb-24 rounded-lg overflow-hidden text-center relative">
+                    <h1 class="title-font sm:text-2xl text-xl font-medium text-gray-900 mb-3">API</h1>
+                    <label for="mysql-input" class="text-left leading-7 text-sm text-gray-600">Endpoint:</label>
+                    <input type="url" id="mysql-input" name="mysql-input" class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                    <button class="text-white bg-indigo-500 border-0 my-4 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">Connect</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
