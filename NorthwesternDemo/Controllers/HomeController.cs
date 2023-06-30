@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NorthwesternDemo.Models;
 using System.Diagnostics;
+using Newtonsoft.Json;
+
 
 namespace NorthwesternDemo.Controllers
 {
@@ -18,10 +20,25 @@ namespace NorthwesternDemo.Controllers
 
             return View();
         }
+        public async Task<IActionResult> Api(string apiUrl) {
+            
+            if (string.IsNullOrEmpty(apiUrl)) {
+                apiUrl = "https://www.balldontlie.io/api/v1/teams";
+            }
 
-        public IActionResult Api(string url)
-        {
+            using HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.GetAsync(apiUrl);
+
+            if (response.IsSuccessStatusCode) {
+                string jsonString = await response.Content.ReadAsStringAsync();
+                //dynamic jsonData = JsonConvert.DeserializeObject(jsonString);
+                //ViewBag.Result = jsonData;
+                ViewBag.Url = apiUrl;
+                ViewBag.Result = jsonString;
+                return View();
+            }
             return View();
+
         }
 
         public IActionResult MySql(string url)
