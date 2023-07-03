@@ -12,8 +12,8 @@
                     <h1 class="title-font sm:text-2xl text-xl font-medium text-gray-900 mb-3">MySQL</h1>
                     @using (Html.BeginForm("MySql", "Home", FormMethod.Post))
                     {
-                        <label for="mysql-input" class="text-left leading-7 text-sm text-gray-600">Connection String:</label>
-                        <input type="url" id="mysql-input" name="mysql-input" class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                        <label for="sqlUrl" class="text-left leading-7 text-sm text-gray-600">Connection String:</label>
+                        <input type="url" id="sqlUrl" name="sqlUrl" class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                         <button class="text-white bg-indigo-500 border-0 my-4 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">Connect</button>
                     }
                 </div>
@@ -24,8 +24,8 @@
                     @using (Html.BeginForm("Api", "Home", FormMethod.Post))
                     {
                         <label for="apiUrl" class="text-left leading-7 text-sm text-gray-600">Endpoint:</label>
-                        <input type="url" id="apiUrl" name="apiUrl" class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-                        <button type="submit" class="text-white bg-indigo-500 border-0 my-4 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">Send</button>
+                        <input type="url" placeholder="https://www.balldontlie.io/api/v1/team" id="apiUrl" name="apiUrl" class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                        <button type="submit" class="text-white bg-indigo-500 border-0 my-4 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">Get Response</button>
                     }
                 </div>
             </div>

@@ -1,23 +1,35 @@
 ﻿@{
     ViewData["Title"] = "API";
-    var results = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(ViewBag.Result);
+    var results = ViewBag.Results;
 }
 
 <section class="text-gray-600 body-font">
     <div class="container px-5 py-2 mx-auto flex flex-col">
-        @ViewBag.Url
+        <p>Endpoint: @ViewBag.Url</p>
+        <p>
+            Status Code: 
+            @if (ViewBag.StatusCode == "OK")
+            {
+                <span class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">@ViewBag.StatusCode</span>
+            } else
+            {
+                @ViewBag.StatusCode
+            }
+        </p>
     </div>
     <div class="container px-5 py-8 mx-auto flex flex-col">
-        <table class="table-fixed border-collapse border border-slate-400">
-            <thead>
-                <tr>
-                    @foreach (var property in results.data[0].Properties())
-                    {
-                        <th class="p-4 border border-slate-300">@property.Name</th>
-                    }
-                </tr>
-            </thead>
-            <tbody>
+        @if (ViewBag.StatusCode == "OK" && results.ContainsKey("data"))
+        {
+            <table class="table-fixed border-collapse border border-slate-400">
+                <thead>
+                    <tr>
+                        @foreach (var property in results.data[0].Properties())
+                        {
+                            <th class="p-4 border border-slate-300">@property.Name</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
                     @foreach (var item in results.data)
                     {
                         <tr>
@@ -27,12 +39,13 @@
                             }
                         </tr>
                     }
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        }
     </div>
     <div class="container px-5 py-4 mx-auto flex flex-col">
         <p>Raw JSON:</p>
-        @ViewBag.Result
+        @ViewBag.Results
     </div>
 </section>
 
