@@ -2,7 +2,9 @@
 using NorthwesternDemo.Models;
 using System.Diagnostics;
 using Newtonsoft.Json;
-
+using MySql.Data.MySqlClient;
+using Microsoft.Extensions.Configuration;
+using System.Configuration;
 
 namespace NorthwesternDemo.Controllers
 {
@@ -41,15 +43,61 @@ namespace NorthwesternDemo.Controllers
             } else {
                 //Handle other responses if needed
             }
-            
             return View();
 
         }
 
-        public IActionResult MySql(string sqlUrl)
+        public IActionResult MySql(string sqlCon)
         {
+            if (string.IsNullOrEmpty(sqlCon))
+            {
+                // localhost demo DB
+                sqlCon = "server=localhost;user=root;password=Pongolilypesto!;database=demo";
+            }
 
-            return View();
+            ViewBag.Sql = sqlCon;
+
+            try {
+                using MySqlConnection connection = new MySqlConnection(sqlCon);
+                connection.Open();
+
+                // demo tables: stocks, cars
+                string table = "cars";
+                string query = $"SELECT * FROM {table} LIMIT 30";
+
+                List<string> columnNames = new List<string>();
+                List<List<object>> rows = new List<List<object>>();
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    using MySqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        List<object> row = new List<object>();
+
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            string column = reader.GetName(i);
+                            if (!columnNames.Contains(column))
+                            {
+                                columnNames.Add(column);
+                            }
+                            object value = reader.GetValue(i);
+                            row.Add(value);
+                        }
+                        rows.Add(row);
+                    }
+                    ViewBag.Rows = rows;
+                    ViewBag.ColumnNames = columnNames;
+                }
+                connection.Close();
+
+                return View();
+            }
+            catch (Exception ex) {
+                ViewBag.Error = ex;
+                return View();
+            }
         }
 
         public IActionResult Privacy()
