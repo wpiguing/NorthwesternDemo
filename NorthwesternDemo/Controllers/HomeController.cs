@@ -5,6 +5,8 @@ using Newtonsoft.Json;
 using MySql.Data.MySqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Configuration;
+using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 
 namespace NorthwesternDemo.Controllers
 {
@@ -21,78 +23,88 @@ namespace NorthwesternDemo.Controllers
         {
             return View();
         }
+        
         public async Task<IActionResult> Api(string apiUrl) {
             
             if (string.IsNullOrEmpty(apiUrl)) {
                 // Sample Endpoints
                 // apiUrl = "https://api.publicapis.org/entries?category=sports";
-                apiUrl = "https://www.balldontlie.io/api/v1/teams";
+                apiUrl = "https://swapi.dev/api/people";
             }
 
-            using HttpClient client = new HttpClient();
-            HttpResponseMessage response = await client.GetAsync(apiUrl);
-
-            ViewBag.StatusCode = response.StatusCode.ToString();
             ViewBag.Url = apiUrl;
 
-            if (response.IsSuccessStatusCode) {
-                string jsonString = await response.Content.ReadAsStringAsync();
-                dynamic jsonData = JsonConvert.DeserializeObject(jsonString);
-                ViewBag.Results = jsonData;
-                return View();
-            } else {
-                //Handle other responses if needed
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage response = await client.GetAsync(apiUrl);
+
+                ViewBag.StatusCode = response.StatusCode.ToString();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string jsonString = await response.Content.ReadAsStringAsync();
+                    dynamic jsonData = JsonConvert.DeserializeObject(jsonString);
+                    ViewBag.Results = jsonData;
+                }
+                else
+                {
+                    //Handle other responses 
+                }
             }
             return View();
 
         }
 
-        public IActionResult MySql(string sqlCon)
+        public async Task<IActionResult> MySql(string sqlCon)
         {
             if (string.IsNullOrEmpty(sqlCon))
             {
                 // localhost demo DB
-                sqlCon = "server=localhost;user=root;password=Pongolilypesto!;database=demo";
+                sqlCon = "server=mysql23.ezhostingserver.com;user=mark;password=Feinberg21!;database=mysql_test";
             }
 
             ViewBag.Sql = sqlCon;
 
             try {
-                using MySqlConnection connection = new MySqlConnection(sqlCon);
-                connection.Open();
-
-                // demo tables: stocks, cars
-                string table = "cars";
+                // demo tables:  cars, stocks, emptyStockTable
+                string table = "customers";
                 string query = $"SELECT * FROM {table} LIMIT 30";
 
-                List<string> columnNames = new List<string>();
-                List<List<object>> rows = new List<List<object>>();
+                MySqlViewModel model = new MySqlViewModel();
 
-                using (MySqlCommand command = new MySqlCommand(query, connection))
-                {
-                    using MySqlDataReader reader = command.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        List<object> row = new List<object>();
+                using (MySqlConnection connection = new MySqlConnection(sqlCon)) {
+                    
+                    await connection.OpenAsync();
 
-                        for (int i = 0; i < reader.FieldCount; i++)
-                        {
-                            string column = reader.GetName(i);
-                            if (!columnNames.Contains(column))
-                            {
-                                columnNames.Add(column);
-                            }
-                            object value = reader.GetValue(i);
-                            row.Add(value);
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    using (MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync()) {
+                        
+                        if (!reader.HasRows){
+                            // Handle no data
                         }
-                        rows.Add(row);
-                    }
-                    ViewBag.Rows = rows;
-                    ViewBag.ColumnNames = columnNames;
-                }
-                connection.Close();
 
-                return View();
+                        while (await reader.ReadAsync()) {
+
+                            List<object> rowData = new List<object>();
+
+                            for (int i = 0; i < reader.FieldCount; i++) {
+
+                                string column = reader.GetName(i);
+
+                                if (!model.ColumnNames.Contains(column)) {
+                                    model.ColumnNames.Add(column);
+                                }
+
+                                object value = reader.GetValue(i);
+                                rowData.Add(value);
+                            }
+                            model.Rows.Add(rowData);
+                        }
+                    }
+                    connection.Close();
+                }
+                ViewBag.Table = table;
+                return View(model);
             }
             catch (Exception ex) {
                 ViewBag.Error = ex;

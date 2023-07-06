@@ -3,39 +3,55 @@
     var results = ViewBag.Results;
 }
 
+@using Newtonsoft.Json.Linq;
+
 <section class="text-gray-600 body-font">
     <div class="container px-5 py-2 mx-auto flex flex-col">
         <p>Endpoint: @ViewBag.Url</p>
         <p>
-            Status Code: 
+            Status Code:
             @if (ViewBag.StatusCode == "OK")
             {
                 <span class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">@ViewBag.StatusCode</span>
-            } else
+            }
+            else
             {
                 @ViewBag.StatusCode
             }
         </p>
     </div>
     <div class="container px-5 py-8 mx-auto flex flex-col">
-        @if (ViewBag.StatusCode == "OK" && results.ContainsKey("data"))
+        @if (ViewBag.StatusCode == "OK" && results.ContainsKey("results"))
         {
             <table class="table-fixed border-collapse border border-slate-400">
                 <thead>
                     <tr>
-                        @foreach (var property in results.data[0].Properties())
+                        @foreach (var property in results.results[0].Properties())
                         {
                             <th class="p-4 border border-slate-300">@property.Name</th>
                         }
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in results.data)
+                    @foreach (var item in results.results)
                     {
                         <tr>
                             @foreach (var property in item.Properties())
                             {
-                                <td class="p-4 border border-slate-300">@property.Value</td>
+                                if (property.Value.Type == JTokenType.Array)
+                                {
+                                    <td class="p-4 border border-slate-300">
+                                    @foreach (var listItem in property.Value)
+                                    {
+                                         @listItem <br/>
+                                    }
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td class="p-4 border border-slate-300">@property.Value </td>
+                                }
+                                
                             }
                         </tr>
                     }
@@ -48,5 +64,4 @@
         @ViewBag.Results
     </div>
 </section>
-
 

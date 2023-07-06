@@ -2,44 +2,47 @@
     ViewData["Title"] = "MySQL Page";
 }
 
+@model MySqlViewModel
+
 
 <section class="text-gray-600 body-font">
     <div class="container px-5 py-8 mx-auto flex flex-col">
-        @if (ViewBag.ColumnNames != null)
+        @if (Model.Rows.Count > 0)
         {
             <table class="table-fixed border-collapse border border-slate-400">
                 <thead>
                     <tr>
-                        @foreach (var column in ViewBag.ColumnNames)
+                        @foreach (var column in Model.ColumnNames)
                         {
                             <th class="p-4 border border-slate-300">@column</th>
                         }
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var row in ViewBag.Rows)
+                    @foreach (var row in Model.Rows)
                     {
                         <tr>
-                        @foreach (object cell in row)
-                        {
-                            <td class="p-4 border border-slate-300">@cell</td>
-                        }
+                            @foreach (object cell in row)
+                            {
+                                <td class="p-4 border border-slate-300">@cell</td>
+                            }
                         </tr>
                     }
-                    <tr>
-                        
-                    </tr>
                 </tbody>
             </table>
-        } else
+        }
+        else
         {
             <div class="container px-5 py-4 mx-auto flex flex-col">
-               No entries found.
+                No entries found.
             </div>
         }
     </div>
     <div class="container px-5 py-4 mx-auto flex flex-col">
         <p>Connection String: @ViewBag.Sql</p>
+    </div>
+    <div class="container px-5 py-4 mx-auto flex flex-col">
+        <p>Table: @ViewBag.Table</p>
     </div>
 </section>
 
