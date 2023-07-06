@@ -60,7 +60,7 @@ namespace NorthwesternDemo.Controllers
             if (string.IsNullOrEmpty(sqlCon))
             {
                 // localhost demo DB
-                sqlCon = "server=mysql23.ezhostingserver.com;user=mark;password=Feinberg21!;database=mysql_test";
+                sqlCon = "server=localhost;user=root;password=Pongolilypesto!;database=demo";
             }
 
             ViewBag.Sql = sqlCon;
